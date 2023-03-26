@@ -1,11 +1,12 @@
 import React, {useRef} from "react";
+import { useHistory } from "react-router-dom";
 import './SignUp.css'
 
 const SignUp = () => {
     const emailInputRef = useRef();
     const passwordInputRef = useRef();
     const confirmInputRef = useRef(); 
-
+    const history = useHistory();
     
 
     const submitHandler = async(event) =>{
@@ -35,10 +36,14 @@ const SignUp = () => {
                 let errorMessage = 'Authentication Failed'
                 throw new Error(errorMessage)
             }
+            history.replace("/login")
          } catch (err) {
             console.log(err)
          }
 
+    }
+    const loginHandler = () => {
+        history.replace("/login")
     }
     return (
        <React.Fragment>
@@ -52,7 +57,7 @@ const SignUp = () => {
             <input type="password" ref={confirmInputRef} required></input><br/>
             <button type="submit">Sign Up</button>
         </form>
-        <button className="button2">Have an Account? Login!</button>
+        <button className="button2" onClick={loginHandler}>Have an Account? Login!</button>
        </React.Fragment>
     )
 }
