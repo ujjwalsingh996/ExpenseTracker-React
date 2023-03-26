@@ -1,8 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import AuthContext from "../store/auth-context";
 import "./Login.css";
 
 const Login = () => {
+  const autCtx = useContext(AuthContext);
   const emailRef = useRef();
   const passwordRef = useRef();
   const history = useHistory();
@@ -11,10 +13,10 @@ const Login = () => {
   };
 
   const submitHandler = async (event) => {
+    event.preventDefault();
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passwordRef.current.value;
     console.log(enteredEmail, enteredPassword);
-    event.preventDefault();
     try {
       const response = await fetch(
         "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDCbHcNqtDAJHrL7U_2YgYvyOjHTc60FoA",
@@ -30,14 +32,16 @@ const Login = () => {
           },
         }
       );
+      let data;
       if (response.ok) {
-        let data = await response.json();
+        data = await response.json();
         console.log("User has successfully Logged In");
       } else {
-        let data = await response.json();
+        data = await response.json();
         let errorMessage = "Login Failed";
         throw new Error(errorMessage);
       }
+      autCtx.login(data.idToken);
       history.replace("/exptracker");
     } catch (err) {
       console.log(err);
