@@ -3,6 +3,7 @@ import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import { Route, Switch } from "react-router-dom";
 import ExpenseTracker from "./components/ExpenseTracker";
+import UpdateProfile from "./components/UpdateProfile";
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
       </Route>
       <Route path="/exptracker">
         <ExpenseTracker/>
+      </Route>
+      <Route path="/update">
+        <UpdateProfile/>
       </Route>
       </Switch>
       

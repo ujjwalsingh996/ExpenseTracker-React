@@ -1,0 +1,49 @@
+.input {
+    margin: 2rem auto;
+    padding: 1rem;
+    width: 100%;
+    max-width: 40rem;
+  }
+  
+  .input label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .header {
+    text-align: center;
+  }
+
+  
+  .input input {
+    font: inherit;
+    display: block;
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 0.15rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .input button {
+    font: inherit;
+    width: 50;
+    font-weight: bolder;
+    padding: 0.25rem 1rem;
+    margin: auto;
+  }
+  
+  .input input:focus {
+    outline: none;
+    border-color: #4f005f;
+  }
+
+  .button2 {
+    font: inherit;
+    width: 50;
+    font-weight: bolder;
+    padding: 0.25rem 1rem;
+    margin: auto;
+    text-align: center;
+    display: flex
+  }
