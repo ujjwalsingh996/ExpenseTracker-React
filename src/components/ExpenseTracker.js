@@ -46,7 +46,7 @@ const ExpenseTracker = () => {
     history.replace("/login");
   };
 
-  const expenseHandler = async (event) => {
+  const expenseHandler = async (event, id, obj2) => {
     event.preventDefault();
     const enteredMoney = moneyInputRef.current.value;
     const enteredDesc = descInputRef.current.value;
@@ -68,6 +68,22 @@ const ExpenseTracker = () => {
       )
       .then((res) => console.log(res.data));
 
+    // axios
+    //   .get(
+    //     "https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses.json"
+    //   )
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     setExpenses(response.data);
+    //     console.log(expenses);
+    //   });
+    getData();
+    axios.put(`https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses/${id}.json`, obj2).then((res) => {
+        console.log(res.data)
+        console.log('Successfully Updated')
+    })
+  };
+  const getData = () => {
     axios
       .get(
         "https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses.json"
@@ -79,16 +95,30 @@ const ExpenseTracker = () => {
       });
   };
   useEffect(() => {
-    axios
-      .get(
-        "https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses.json"
-      )
-      .then((response) => {
-        console.log(response.data);
-        setExpenses(response.data);
-        console.log(expenses);
-      });
+    getData();
   }, []);
+
+  const expenseDeleteHandler = (id) => {
+    axios.delete(
+      `https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses/${id}.json`
+    );
+    getData();
+    console.log("expense successfully deleted")
+  };
+
+  const expenseEditHandler = (id, money, category,description) => {
+    moneyInputRef.current.value = money;
+    descInputRef.current.value = description;
+    categoryInputRef.current.value = category;
+
+    const objNew = {
+        money: moneyInputRef.current.value,
+        desc: descInputRef.current.value,
+        category: categoryInputRef.current.value
+    } 
+    expenseDeleteHandler(id, objNew)
+    
+  }
   return (
     <React.Fragment>
       <div className="right">
@@ -120,7 +150,14 @@ const ExpenseTracker = () => {
           <ul className="header" key={key}>
             <h3>
               Rs {expenses[key].money} ; Category - {expenses[key].category}{" "}
-              ;Description - {expenses[key].desc}
+              ;Description - {expenses[key].desc} <button onClick={() => {expenseEditHandler(key, expenses[key].money,expenses[key].category, expenses[key].desc )}}>Edit</button>{" "}
+              <button
+                onClick={() => {
+                  expenseDeleteHandler(key);
+                }}
+              >
+                Delete
+              </button>
             </h3>
           </ul>
         ))}
