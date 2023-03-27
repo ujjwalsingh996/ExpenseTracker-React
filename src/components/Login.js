@@ -1,5 +1,5 @@
 import React, { useRef, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import AuthContext from "../store/auth-context";
 import "./Login.css";
 
@@ -55,6 +55,7 @@ const Login = () => {
         <input type="email" ref={emailRef}></input>
         <label>Password:</label>
         <input type="password" ref={passwordRef}></input>
+        <h4 className="header"><Link to="/forgot">Forgot Password?</Link></h4>
         <button type="submit">Login</button>
       </form>
       <button className="button2" onClick={signupHandler}>
