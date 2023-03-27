@@ -1,12 +1,12 @@
 import React, { useRef, useContext } from "react";
 import AuthContext from "../store/auth-context";
-import './UpdateProfile.css'
+
+import "./UpdateProfile.css";
 
 const UpdateProfile = () => {
   const authCtx = useContext(AuthContext);
   const nameInputRef = useRef();
   const profilePhotoInputRef = useRef();
-  
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -21,26 +21,63 @@ const UpdateProfile = () => {
             idToken: authCtx.token,
             displayName: enteredName,
             photoUrl: enteredLink,
-            deleteAttribute: "DISPLAY_NAME",
+            deleteAttribute: "PHOTO_URL",
             returnSecureToken: true,
           }),
           headers: {
-            'Content-Type': 'application/json'
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
       let data;
       if (response.ok) {
-        data = response.json();
+        data = await response.json();
         console.log("Profile Updated");
+        nameInputRef.current.value = '';
+        profilePhotoInputRef.current.value = ''
       } else {
-        data = response.json();
+        data = await response.json();
         let errorMessage = "Not Updated";
         throw new Error(errorMessage);
       }
     } catch (err) {
       console.log(err);
     }
+  };
+
+
+
+  const editUserDetailsHandler = () => {
+    
+      fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDCbHcNqtDAJHrL7U_2YgYvyOjHTc60FoA",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            idToken: authCtx.token,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            let errorMessage = "Update Failed";
+            throw new Error(errorMessage);
+          });
+        }
+      })
+      .then((data) => {
+        console.log(data.users[0].displayName)
+        nameInputRef.current.value = data.users[0].displayName
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   return (
     <React.Fragment>
@@ -52,6 +89,7 @@ const UpdateProfile = () => {
         <input type="text" ref={profilePhotoInputRef}></input>
         <button type="submit">Update</button>
       </form>
+      <button className="button2" onClick={editUserDetailsHandler}>Edit Details</button>
     </React.Fragment>
   );
 };
