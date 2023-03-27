@@ -1,8 +1,10 @@
 import React from "react";
 import AuthContext from "./auth-context";
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 const AuthContextProvider = (props) => {
+    const history = useHistory();
     const initialToken = localStorage.getItem('token')
     const [token, setToken] = useState(initialToken)
     const userIsLoggedIn = !!token;
@@ -13,7 +15,10 @@ const AuthContextProvider = (props) => {
     }
 
     const logoutHandler = () => {
-
+        setToken(null)
+        localStorage.removeItem('token')
+        console.log('logout successful')
+       
     }
     const contextValue = {
         token: token,

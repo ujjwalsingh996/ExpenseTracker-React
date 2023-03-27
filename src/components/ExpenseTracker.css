@@ -1,0 +1,29 @@
+.header {
+    text-align: center;
+  }
+
+  .button2 {
+    font: inherit;
+    width: 50;
+    font-weight: bolder;
+    padding: 0.25rem 1rem;
+    margin: auto;
+    text-align: center;
+    display: flex
+  }
+
+  .right {
+    text-align: right;
+    margin-bottom: 1%;
+    margin-top: 1%;
+    margin-right: 1%;
+  }
+
+  .right button {
+    font: inherit;
+    width: 50;
+    font-weight: bolder;
+    text-align:right;
+  }
+
+  

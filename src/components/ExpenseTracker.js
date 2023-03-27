@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
+import './ExpenseTracker.css'
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import AuthContext from "../store/auth-context";
 
 const ExpenseTracker = () => {
     const authCtx = useContext(AuthContext)
+    const history = useHistory();
 
     const verifyEmailHandler = async() => {
         try{
@@ -32,9 +35,17 @@ const ExpenseTracker = () => {
         console.log(err)
     }
     }   
-    return(<React.Fragment><h1 className="header">Welcome to ExpenseTracker!</h1>
+    const logOutHandler = () => {
+        authCtx.logout();
+        history.replace('/login')
+    }
+    return(<React.Fragment>
+        <div className="right"> <button onClick={logOutHandler}>Logout</button></div><h1 className="header">Welcome to ExpenseTracker!</h1>
     <button className="button2" onClick={verifyEmailHandler}>Verify Email Id</button>
-    <Link to="/update">Your profile is Incomplete</Link></React.Fragment>)
+    <h3 className="header"><Link to="/update">Your profile is Incomplete</Link></h3>
+   
+    </React.Fragment>)
+
 }
 
 export default ExpenseTracker;
