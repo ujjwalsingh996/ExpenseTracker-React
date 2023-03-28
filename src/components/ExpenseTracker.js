@@ -8,12 +8,13 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/index2";
 import { expenseActions } from "../store/index2";
+import { themeActions } from "../store/index2";
 
 const ExpenseTracker = () => {
   const token = useSelector((state) => state.auth.token);
   const [button, setButton] = useState(false);
   const email = useSelector((state) => state.auth.emailID);
-  const [expenses, setExpenses] = useState(null);
+  const [expenses, setExpenses] = useState({});
   const [refresh, setRefresh] = useState(true);
   const moneyInputRef = useRef();
   const descInputRef = useRef();
@@ -21,6 +22,9 @@ const ExpenseTracker = () => {
   const authCtx = useContext(AuthContext);
   const history = useHistory();
   const dispatch = useDispatch();
+  const dark = useSelector((state) => state.theme.theme);
+  const downloadRef = useRef(null);
+
 
   let emailid = "";
   for (let i = 0; i < email.length; i++) {
@@ -121,23 +125,20 @@ const ExpenseTracker = () => {
         )
         .then((response) => {
           setExpenses(response.data);
-          let sum = 0
+          let sum = 0;
           Object.keys(response.data).map(
             (key) => (
-                sum = Number(sum) + Number(response.data[key].money),
+              (sum = Number(sum) + Number(response.data[key].money)),
               dispatch(expenseActions.money(response.data[key].money)),
               dispatch(expenseActions.category(response.data[key].category)),
               dispatch(expenseActions.desc(response.data[key].desc))
-              
             )
           );
-          console.log(sum)
-          if(sum >= 10000 )
-          {
-            setButton(true)
-          }
-          else {
-            setButton(false)
+          console.log(sum);
+          if (sum >= 10000) {
+            setButton(true);
+          } else {
+            setButton(false);
           }
         });
     };
@@ -166,12 +167,39 @@ const ExpenseTracker = () => {
     };
     expenseDeleteHandler(id, objNew);
   };
+
+  const activatePremium = () => {
+    dispatch(themeActions.dark());
+  };
+
+  const toggleTheme = () => {
+    dispatch(themeActions.toggle());
+  };
+
+  let data1 = Object.keys(expenses).map((key) => expenses[key].money);
+
+  let data2 = Object.keys(expenses).map((key) => expenses[key].desc);
+  let data = [data1, data2];
+  if (button) {
+    
+    const a1 = document.getElementById("a1");
+    const blob = new Blob([data]);
+    const url = window.URL.createObjectURL(blob) || window.webkitURL.createObjectURL(blob);
+    downloadRef.current.href = url;
+  }
+
   return (
-    <React.Fragment>
+    <div style={{ backgroundColor: dark ? "grey" : "white" }}>
       <div className="right">
         {" "}
         <button onClick={logOutHandler}>Logout</button>
-        {button && <button>Activate Premium</button>}
+        {button && <button onClick={activatePremium}>Activate Premium</button>}
+        {button && (
+          <a ref={downloadRef} to="#" download="file1.csv">
+            Download Expenses
+          </a>
+        )}
+        <button onClick={toggleTheme}>Toggle Theme</button>
       </div>
       <h1 className="header">Welcome to ExpenseTracker!</h1>
       <button className="button2" onClick={verifyEmailHandler}>
@@ -223,7 +251,7 @@ const ExpenseTracker = () => {
             </ul>
           ))}
       </ul>
-    </React.Fragment>
+    </div>
   );
 };
 

@@ -5,6 +5,24 @@ const initialAuthState = { isAuthenticated: false, token: '', emailID: '' }
 
 const initialExpenseState = { id: '', money: '', desc: '', category: ''}
 
+const initialTheme = { theme: false }
+
+const themeSlice = createSlice({
+    name: "theme",
+    initialState: initialTheme,
+    reducers: {
+        dark(state) {
+            state.theme = true;
+        },
+        light(state) {
+            state.theme = false;
+        },
+        toggle(state) {
+            state.theme = !state.theme
+        }
+    }
+})
+
 const expenseSlice = createSlice({
     name: "expenses",
     initialState: initialExpenseState,
@@ -45,10 +63,11 @@ const authSlice = createSlice({
 })
 
 const store = configureStore({
-    reducer: { auth: authSlice.reducer, expense: expenseSlice.reducer }
+    reducer: { auth: authSlice.reducer, expense: expenseSlice.reducer, theme: themeSlice.reducer }
 })
 
 export const authActions = authSlice.actions;
 export const expenseActions = expenseSlice.actions;
+export const themeActions = themeSlice.actions;
 
 export default store;
