@@ -1,9 +1,12 @@
 import React, { useRef, useContext } from "react";
 import AuthContext from "../store/auth-context";
+import { useSelector } from "react-redux";
 
 import "./UpdateProfile.css";
 
 const UpdateProfile = () => {
+  const token = useSelector((state) => state.auth.token )
+  console.log(token)
   const authCtx = useContext(AuthContext);
   const nameInputRef = useRef();
   const profilePhotoInputRef = useRef();
@@ -54,7 +57,7 @@ const UpdateProfile = () => {
         {
           method: "POST",
           body: JSON.stringify({
-            idToken: authCtx.token,
+            idToken: token,
           }),
           headers: {
             "Content-Type": "application/json",

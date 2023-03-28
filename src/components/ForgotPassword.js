@@ -1,15 +1,16 @@
 import React, { useRef } from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import "./ForgotPassword.css";
 
 const ForgotPassword = () => {
   const emailInputRef = useRef();
   const history = useHistory();
+  const email = useSelector((state) => state.auth.emailID)
  
   let content;
   const resetPasswordHandler = async (event) => {
     event.preventDefault();
-    const eneteredEmail = emailInputRef.current.value;
 
     try {
       const response = await fetch(
@@ -18,7 +19,7 @@ const ForgotPassword = () => {
           method: "POST",
           body: JSON.stringify({
             requestType: "PASSWORD_RESET",
-            email: eneteredEmail,
+            email: email,
           }),
           headers: {
             "Content-Type": "application/json",

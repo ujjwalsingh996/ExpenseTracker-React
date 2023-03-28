@@ -4,14 +4,35 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import AuthContext from "../store/auth-context";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { authActions } from "../store/index2";
+import { expenseActions } from "../store/index2";
 
 const ExpenseTracker = () => {
-  const [expenses, setExpenses] = useState([]);
+  const token = useSelector((state) => state.auth.token);
+  const [button, setButton] = useState(false);
+  const email = useSelector((state) => state.auth.emailID);
+  const [expenses, setExpenses] = useState(null);
+  const [refresh, setRefresh] = useState(true);
   const moneyInputRef = useRef();
   const descInputRef = useRef();
   const categoryInputRef = useRef();
   const authCtx = useContext(AuthContext);
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  let emailid = "";
+  for (let i = 0; i < email.length; i++) {
+    if (email[i] === "@") {
+      continue;
+    }
+    if (email[i] === ".") {
+      continue;
+    }
+    emailid = emailid + email[i];
+  }
+  console.log(emailid);
 
   const verifyEmailHandler = async () => {
     try {
@@ -21,7 +42,7 @@ const ExpenseTracker = () => {
           method: "POST",
           body: JSON.stringify({
             requestType: "VERIFY_EMAIL",
-            idToken: authCtx.token,
+            idToken: token,
           }),
           headers: {
             "Content-Type": "application/json",
@@ -44,6 +65,7 @@ const ExpenseTracker = () => {
   const logOutHandler = () => {
     authCtx.logout();
     history.replace("/login");
+    dispatch(authActions.logout());
   };
 
   const expenseHandler = async (event, id, obj2) => {
@@ -57,13 +79,15 @@ const ExpenseTracker = () => {
       desc: enteredDesc,
       category: enteredCategory,
     };
-
+    dispatch(expenseActions.money(enteredMoney));
+    dispatch(expenseActions.category(enteredCategory));
+    dispatch(expenseActions.desc(enteredDesc));
     moneyInputRef.current.value = "";
     descInputRef.current.value = "";
     categoryInputRef.current.value = "";
     axios
       .post(
-        "https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses.json",
+        `https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses${emailid}.json`,
         obj
       )
       .then((res) => console.log(res.data));
@@ -77,53 +101,77 @@ const ExpenseTracker = () => {
     //     setExpenses(response.data);
     //     console.log(expenses);
     //   });
-    getData();
-    axios.put(`https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses/${id}.json`, obj2).then((res) => {
-        console.log(res.data)
-        console.log('Successfully Updated')
-    })
-  };
-  const getData = () => {
     axios
-      .get(
-        "https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses.json"
+      .put(
+        `https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses${emailid}/${id}.json`,
+        obj2
       )
-      .then((response) => {
-        console.log(response.data);
-        setExpenses(response.data);
-        console.log(expenses);
+      .then((res) => {
+        console.log(res.data);
+        console.log("Expense Successfully Updated");
       });
+    setRefresh((prevState) => !prevState);
   };
+
   useEffect(() => {
+    const getData = () => {
+      axios
+        .get(
+          `https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses${emailid}.json`
+        )
+        .then((response) => {
+          setExpenses(response.data);
+          let sum = 0
+          Object.keys(response.data).map(
+            (key) => (
+                sum = Number(sum) + Number(response.data[key].money),
+              dispatch(expenseActions.money(response.data[key].money)),
+              dispatch(expenseActions.category(response.data[key].category)),
+              dispatch(expenseActions.desc(response.data[key].desc))
+              
+            )
+          );
+          console.log(sum)
+          if(sum >= 10000 )
+          {
+            setButton(true)
+          }
+          else {
+            setButton(false)
+          }
+        });
+    };
+
     getData();
   }, []);
 
   const expenseDeleteHandler = (id) => {
     axios.delete(
-      `https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses/${id}.json`
+      `https://expense-tracker-1266e-default-rtdb.firebaseio.com/expenses${emailid}/${id}.json`
     );
-    getData();
-    console.log("expense successfully deleted")
+    console.log("expense successfully deleted");
+    setRefresh((prevState) => !prevState);
+    dispatch(expenseActions.id(id));
   };
 
-  const expenseEditHandler = (id, money, category,description) => {
+  const expenseEditHandler = (id, money, category, description) => {
     moneyInputRef.current.value = money;
     descInputRef.current.value = description;
     categoryInputRef.current.value = category;
 
     const objNew = {
-        money: moneyInputRef.current.value,
-        desc: descInputRef.current.value,
-        category: categoryInputRef.current.value
-    } 
-    expenseDeleteHandler(id, objNew)
-    
-  }
+      money: moneyInputRef.current.value,
+      desc: descInputRef.current.value,
+      category: categoryInputRef.current.value,
+    };
+    expenseDeleteHandler(id, objNew);
+  };
   return (
     <React.Fragment>
       <div className="right">
         {" "}
         <button onClick={logOutHandler}>Logout</button>
+        {button && <button>Activate Premium</button>}
       </div>
       <h1 className="header">Welcome to ExpenseTracker!</h1>
       <button className="button2" onClick={verifyEmailHandler}>
@@ -139,28 +187,41 @@ const ExpenseTracker = () => {
         <input type="text" ref={descInputRef} required></input>
         <label>Category:</label>
         <select ref={categoryInputRef}>
-          <option value="food">Food</option>
-          <option value="fuel">Fuel</option>
-          <option value="salary">Salary</option>
+          <option value="Food">Food</option>
+          <option value="Fuel">Fuel</option>
+          <option value="Salary">Salary</option>
         </select>
         <button type="submit">Add Expense</button>
       </form>
       <ul>
-        {Object.keys(expenses).map((key) => (
-          <ul className="header" key={key}>
-            <h3>
-              Rs {expenses[key].money} ; Category - {expenses[key].category}{" "}
-              ;Description - {expenses[key].desc} <button onClick={() => {expenseEditHandler(key, expenses[key].money,expenses[key].category, expenses[key].desc )}}>Edit</button>{" "}
-              <button
-                onClick={() => {
-                  expenseDeleteHandler(key);
-                }}
-              >
-                Delete
-              </button>
-            </h3>
-          </ul>
-        ))}
+        {expenses &&
+          Object.keys(expenses).map((key) => (
+            <ul className="header" key={key}>
+              <h3>
+                Rs {expenses[key].money} ; Category - {expenses[key].category}{" "}
+                ;Description - {expenses[key].desc}{" "}
+                <button
+                  onClick={() => {
+                    expenseEditHandler(
+                      key,
+                      expenses[key].money,
+                      expenses[key].category,
+                      expenses[key].desc
+                    );
+                  }}
+                >
+                  Edit
+                </button>{" "}
+                <button
+                  onClick={() => {
+                    expenseDeleteHandler(key);
+                  }}
+                >
+                  Delete
+                </button>
+              </h3>
+            </ul>
+          ))}
       </ul>
     </React.Fragment>
   );
