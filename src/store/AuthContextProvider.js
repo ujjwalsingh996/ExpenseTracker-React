@@ -7,6 +7,7 @@ const AuthContextProvider = (props) => {
     const history = useHistory();
     const initialToken = localStorage.getItem('token')
     const [token, setToken] = useState(initialToken)
+    const [email, setEmail] = useState('')
     const userIsLoggedIn = !!token;
  
     const loginHandler = (token) => {
@@ -20,11 +21,18 @@ const AuthContextProvider = (props) => {
         console.log('logout successful')
        
     }
+
+    const emailHandler = (email) => {
+        setEmail(email)
+        localStorage.setItem('email', email)
+    }
     const contextValue = {
         token: token,
         isLoggedIn: userIsLoggedIn,
+        email: email,
         login: loginHandler,
-        logout: logoutHandler
+        logout: logoutHandler,
+        setEmail: emailHandler,
     }
     return (
         <AuthContext.Provider value={contextValue}>{props.children}</AuthContext.Provider>

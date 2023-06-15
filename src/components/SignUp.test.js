@@ -45,10 +45,10 @@ describe('Sign Up component', () => {
     test('renders sign up as a text', () => {
     
         //arrange
-        render(<SignUp/>);
+        render(<Login/>);
     
         //act
-        const buttonElement = screen.getByRole('button')
+        const buttonElement = screen.getAllByRole('button')
         userEvent.click(buttonElement)
     
         //assert

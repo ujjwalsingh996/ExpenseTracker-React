@@ -21,15 +21,16 @@ const Login = () => {
   const submitHandler = async (event) => {
     event.preventDefault();
     const enteredEmail = emailRef.current.value;
+    autCtx.setEmail(enteredEmail)
     const enteredPassword = passwordRef.current.value;
     console.log(email, enteredPassword);
     try {
       const response = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDCbHcNqtDAJHrL7U_2YgYvyOjHTc60FoA",
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBbRPGTnJU-_PGp3-QYjr7oO-rAhHYqEp4",
         {
           method: "POST",
           body: JSON.stringify({
-            email: email,
+            email: enteredEmail,
             password: enteredPassword,
             returnSecureToken: true,
           }),
@@ -44,11 +45,17 @@ const Login = () => {
         console.log("User has successfully Logged In");
       } else {
         data = await response.json();
+        console.log(data)
         let errorMessage = "Login Failed";
         throw new Error(errorMessage);
+        
       }
       autCtx.login(data.idToken);
+      autCtx.setEmail(enteredEmail)
+      
       dispatch(authActions.token(data.idToken))
+      dispatch(authActions.login())
+      dispatch(authActions.emailId(enteredEmail))
       history.replace("/exptracker");
     } catch (err) {
       console.log(err);

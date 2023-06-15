@@ -7,26 +7,25 @@ import UpdateProfile from "./components/UpdateProfile";
 import ForgotPassword from "./components/ForgotPassword";
 
 function App() {
+
   return (
-  
-      <Switch>
+    <Switch>
       <Route path="/" exact>
-        <SignUp/>
+        <SignUp />
       </Route>
       <Route path="/login">
-        <Login/>
+        <Login />
       </Route>
       <Route path="/exptracker">
-        <ExpenseTracker/>
+        <ExpenseTracker />
       </Route>
       <Route path="/update">
-        <UpdateProfile/>
+        <UpdateProfile />
       </Route>
       <Route path="/forgot">
-        <ForgotPassword/>
+        <ForgotPassword />
       </Route>
-      </Switch>
-      
+    </Switch>
   );
 }
 

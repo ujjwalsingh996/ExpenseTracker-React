@@ -24,8 +24,12 @@
     width: 50;
     font-weight: bolder;
     text-align:right;
+    margin: 1%;
   }
 
+  .anchor {
+    margin: 1%;
+  }
   .input {
     margin: 2rem auto;
     padding: 1rem;

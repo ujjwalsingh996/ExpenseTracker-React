@@ -15,7 +15,7 @@ const SignUp = () => {
     let enteredPassword = passwordInputRef.current.value;
     try {
       const response = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDCbHcNqtDAJHrL7U_2YgYvyOjHTc60FoA",
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBbRPGTnJU-_PGp3-QYjr7oO-rAhHYqEp4",
         {
           method: "POST",
           body: JSON.stringify({
@@ -62,9 +62,9 @@ const SignUp = () => {
         <br />
         <button type="submit">Sign Up</button>
       </form>
-      <button className="button2" onClick={loginHandler}>
+       <button className="button2" onClick={loginHandler}>
         Have an Account? Login!
-      </button>
+      </button> 
     </React.Fragment>
   );
 };

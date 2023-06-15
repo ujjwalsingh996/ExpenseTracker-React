@@ -12,9 +12,10 @@ const ForgotPassword = () => {
   const resetPasswordHandler = async (event) => {
     event.preventDefault();
 
+
     try {
       const response = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDCbHcNqtDAJHrL7U_2YgYvyOjHTc60FoA",
+        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBbRPGTnJU-_PGp3-QYjr7oO-rAhHYqEp4",
         {
           method: "POST",
           body: JSON.stringify({

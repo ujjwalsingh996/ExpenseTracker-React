@@ -1,9 +1,10 @@
 import { createSlice, configureStore } from "@reduxjs/toolkit";
-import { act } from "react-dom/test-utils";
+import { useContext } from "react";
+import AuthContext from "./auth-context";
 
-const initialAuthState = { isAuthenticated: false, token: '', emailID: '' }
 
-const initialExpenseState = { id: '', money: '', desc: '', category: ''}
+
+
 
 const initialTheme = { theme: false }
 
@@ -23,9 +24,13 @@ const themeSlice = createSlice({
     }
 })
 
+
 const expenseSlice = createSlice({
     name: "expenses",
-    initialState: initialExpenseState,
+    initialState: {
+        expenses: {},
+        id: '',
+    },
     reducers: {
         money(state, action) { 
             state.money = action.payload
@@ -38,9 +43,19 @@ const expenseSlice = createSlice({
         },
         id(state,action) {
             state.id = action.payload
+        },
+        addItems(state, action) {
+            state.expenses = action.payload
+
+        },
+        removeItems(state, action) {
+
         }
     }
 })
+
+
+const initialAuthState = { isAuthenticated: false, token: '', emailID: '' }
 
 const authSlice = createSlice({
     name: "authentication",

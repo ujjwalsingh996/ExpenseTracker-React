@@ -17,7 +17,7 @@ const UpdateProfile = () => {
     const enteredLink = profilePhotoInputRef.current.value;
     try {
       const response = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDCbHcNqtDAJHrL7U_2YgYvyOjHTc60FoA",
+        "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyBbRPGTnJU-_PGp3-QYjr7oO-rAhHYqEp4",
         {
           method: "POST",
           body: JSON.stringify({
@@ -53,11 +53,11 @@ const UpdateProfile = () => {
   const editUserDetailsHandler = () => {
     
       fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDCbHcNqtDAJHrL7U_2YgYvyOjHTc60FoA",
+        "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyBbRPGTnJU-_PGp3-QYjr7oO-rAhHYqEp4",
         {
           method: "POST",
           body: JSON.stringify({
-            idToken: token,
+            idToken: authCtx.token,
           }),
           headers: {
             "Content-Type": "application/json",
