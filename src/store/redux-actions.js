@@ -5,16 +5,12 @@ import axios from "axios";
 
 
 let emailID = localStorage.getItem("email");
-let emailid = "";
-for (let i = 0; i < emailID.length; i++) {
-  if (emailID[i] === "@") {
-    continue;
-  }
-  if (emailID[i] === ".") {
-    continue;
-  }
-  emailid = emailid + emailID[i];
+let emailid;
+if (emailID)
+{
+  emailid = emailID.replace(/[@.]/g, "")
 }
+
 export const sendExpenseData = (obj) => {
   return async (dispatch) => {
     const sendRequest = async () => {

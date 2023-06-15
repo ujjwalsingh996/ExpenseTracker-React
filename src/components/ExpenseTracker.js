@@ -128,7 +128,7 @@ const ExpenseTracker = () => {
     const getData = () => {
       axios
         .get(
-          `https://auth-et-default-rtdb.firebaseio.com//expenses${emailid}.json`
+          `https://auth-et-default-rtdb.firebaseio.com/expenses${emailid}.json`
         )
         .then((response) => {
           setExpenses(response.data);
